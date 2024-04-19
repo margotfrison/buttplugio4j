@@ -2,7 +2,7 @@ package me.margotfrison.buttplugio4j.client.simplified;
 
 import me.margotfrison.buttplugio4j.protocol.Message;
 
-public interface AsyncButtplugIoListener {
+public interface ButtplugIoListener {
 	/**
 	 * Called when the server close the connection whether
 	 * the server abruptly closed the connection or the

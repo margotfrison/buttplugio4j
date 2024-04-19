@@ -65,7 +65,7 @@ public abstract class AbstractPromise<T> implements Promise<T> {
 	public T get() throws InterruptedException, ExecutionException {
 		while ( resultQueue.size() <= 0 && errorQueue.size() <= 0 )
 			Thread.sleep(FUTURE_CHECK_DELAY);
-		if ( errorQueue.size() > 0  )
+		if ( errorQueue.size() > 0 )
 			throw new ExecutionException("Future ended with an error", errorQueue.remove(0));
 		else
 			return resultQueue.remove(0);

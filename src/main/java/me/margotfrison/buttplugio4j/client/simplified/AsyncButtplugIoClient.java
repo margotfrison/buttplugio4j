@@ -47,7 +47,7 @@ public class AsyncButtplugIoClient {
 	@Getter
 	private boolean stoped = true;
 	@Getter
-	private final List<AsyncButtplugIoListener> listeners = new ArrayList<>();
+	private final List<ButtplugIoListener> listeners = new ArrayList<>();
 	@Getter
 	private final long promisesTimeoutMs;
 
@@ -79,7 +79,7 @@ public class AsyncButtplugIoClient {
 	 * Add a {@link BasicButtplugIoListener} listener.
 	 * @param listener a {@link BasicButtplugIoListener} listener
 	 */
-	public void addListener(AsyncButtplugIoListener listener) {
+	public void addListener(ButtplugIoListener listener) {
 		listeners.add(listener);
 	}
 
@@ -87,7 +87,7 @@ public class AsyncButtplugIoClient {
 	 * Remove a {@link BasicButtplugIoListener} listener.
 	 * @param listener the {@link BasicButtplugIoListener} listener to remove
 	 */
-	public void removeListener(AsyncButtplugIoListener listener) {
+	public void removeListener(ButtplugIoListener listener) {
 		listeners.remove(listener);
 	}
 
@@ -271,9 +271,9 @@ public class AsyncButtplugIoClient {
 
 	/**
 	 * Disconnect to buttplug.io web socket server. The listener
-	 * {@link AsyncButtplugIoListener} will be noticed when
+	 * {@link ButtplugIoListener} will be noticed when
 	 * the connection is successfully closed.
-	 * @see AsyncButtplugIoListener#onServerClose()
+	 * @see ButtplugIoListener#onServerClose()
 	 */
 	public void disconnect() {
 		stoped = true;
