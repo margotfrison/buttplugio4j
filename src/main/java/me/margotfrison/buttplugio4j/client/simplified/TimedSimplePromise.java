@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class TimedSimplePormise<T> extends SimplePromise<T> {
+public class TimedSimplePromise<T> extends SimplePromise<T> {
 	private final long bornAt;
 }

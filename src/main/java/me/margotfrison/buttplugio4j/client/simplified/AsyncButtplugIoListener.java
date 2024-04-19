@@ -1,5 +1,7 @@
 package me.margotfrison.buttplugio4j.client.simplified;
 
+import me.margotfrison.buttplugio4j.protocol.Message;
+
 public interface AsyncButtplugIoListener {
 	/**
 	 * Called when the server close the connection whether
@@ -13,4 +15,10 @@ public interface AsyncButtplugIoListener {
 	 * Called when the web socket client encounter an error
 	 */
 	default void onWebSocketError() { }
+
+	/**
+	 * Called when the server sent a response to a subscription command
+	 * (i.e. StartScanning => DeviceAdded)
+	 */
+	default void onSubscribedMessage(Message message) { }
 }

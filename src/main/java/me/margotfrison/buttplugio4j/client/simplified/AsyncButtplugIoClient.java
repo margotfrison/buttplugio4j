@@ -18,14 +18,12 @@ import me.margotfrison.buttplugio4j.client.basic.BasicButtplugIoListener;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientException;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientPromiseException;
 import me.margotfrison.buttplugio4j.protocol.Message;
-import me.margotfrison.buttplugio4j.protocol.genericsensor.SensorSubscribeCommandRequest;
 import me.margotfrison.buttplugio4j.protocol.handshake.RequestServerInfo;
 import me.margotfrison.buttplugio4j.protocol.handshake.ServerInfo;
 
 /**
  * A basic buttplog.io client with some of the basic stuff done for you.
- * It is still fairly loyal to the buttplug.io protocol. Except it
- * TODO doesn't have any subscriptions features (for example {@link SensorSubscribeCommandRequest}).<br>
+ * It is totally loyal to the buttplug.io protocol.<br>
  * This client features :
  * <ul>Requests with {@link Promise}s callbacks. Failing if the timeout
  * is exceeded (as the buttplug.io server sometimes fail to send back
@@ -33,7 +31,6 @@ import me.margotfrison.buttplugio4j.protocol.handshake.ServerInfo;
  * TODO redo javadoc
  */
 public class AsyncButtplugIoClient {
-	// TODO change to Promises
 	/**
 	 * This should be plenty enough (5 seconds) for a local server to respond.
 	 * Use {@link AsyncButtplugIoClient#AsyncButtplugIoClient(String, long)} to
@@ -45,7 +42,7 @@ public class AsyncButtplugIoClient {
 	private final BasicAsyncButtplugIoClient client;
 	private final Thread timedPromiseFailer = new Thread(new TimedPromiseFailer());
 	private boolean timedPromiseFailerStoped = false;
-	private final Map<Message, TimedSimplePormise<Message>> unansweredPromises = new HashMap<>();
+	private final Map<Message, TimedSimplePromise<Message>> unansweredSimplePromises = new HashMap<>();
 	private final Lock unansweredPromisesLock = new ReentrantLock();
 	@Getter
 	private boolean stoped = true;
@@ -105,7 +102,7 @@ public class AsyncButtplugIoClient {
 			// established
 			lockUnansweredPromises();
 			try {
-				for ( Entry<Message, TimedSimplePormise<Message>> promiseEntry : unansweredPromises.entrySet() ) {
+				for ( Entry<Message, TimedSimplePromise<Message>> promiseEntry : unansweredSimplePromises.entrySet() ) {
 					if ( promiseEntry.getKey() instanceof RequestServerInfo )
 						client.sendMessage(promiseEntry.getKey());
 				}
@@ -119,11 +116,17 @@ public class AsyncButtplugIoClient {
 			lockUnansweredPromises();
 			try {
 				for (Message message : messages) {
-					for ( Entry<Message, TimedSimplePormise<Message>> promiseEntry : unansweredPromises.entrySet() ) {
+					// System messages
+					if ( message.getId() == 0 ) {
+						listeners.forEach(l -> l.onSubscribedMessage(message));
+						continue;
+					}
+					// Simple promises
+					for ( Entry<Message, TimedSimplePromise<Message>> promiseEntry : unansweredSimplePromises.entrySet() ) {
 						if ( promiseEntry.getKey().getId() == message.getId() ) {
 							System.out.println("Responded to " + promiseEntry.getKey());
 							promiseEntry.getValue().resolve(message);
-							unansweredPromises.remove(promiseEntry.getKey());
+							unansweredSimplePromises.remove(promiseEntry.getKey());
 							break;
 						}
 					}
@@ -140,7 +143,7 @@ public class AsyncButtplugIoClient {
 				stoped = true;
 				timedPromiseFailerStoped = true;
 				timedPromiseFailer.interrupt();
-				unansweredPromises.forEach((k, v) -> v.error(new ButtplugIoClientPromiseException("Server stopped before message with id %d recieved a response".formatted(k.getId()), reason)));
+				unansweredSimplePromises.forEach((k, v) -> v.error(new ButtplugIoClientPromiseException("Server stopped before message with id %d recieved a response".formatted(k.getId()), reason)));
 				listeners.forEach(l -> l.onServerClose(reason));
 			} finally {
 				unansweredPromisesLock.unlock();
@@ -151,7 +154,7 @@ public class AsyncButtplugIoClient {
 		public void onButtplugClientError(ButtplugIoClientException e) {
 			lockUnansweredPromises();
 			try {
-				unansweredPromises.forEach((k, v) -> v.error(e));
+				unansweredSimplePromises.forEach((k, v) -> v.error(e));
 			} finally {
 				unansweredPromisesLock.unlock();
 			}
@@ -165,11 +168,11 @@ public class AsyncButtplugIoClient {
 				lockUnansweredPromises();
 				try {
 					long killDelay = System.currentTimeMillis() - promisesTimeoutMs;
-					for ( Entry<Message, TimedSimplePormise<Message>> unansweredPromise : unansweredPromises.entrySet() ) {
+					for ( Entry<Message, TimedSimplePromise<Message>> unansweredPromise : unansweredSimplePromises.entrySet() ) {
 						if ( unansweredPromise.getValue().getBornAt() > killDelay ) {
 							System.out.println("Failed " + unansweredPromise.getKey());
 							unansweredPromise.getValue().error(new ButtplugIoClientPromiseException("Server failed to send message back to the client in the allowed time for message with id %d".formatted(unansweredPromise.getKey().getId())));
-							unansweredPromises.remove(unansweredPromise.getKey());
+							unansweredSimplePromises.remove(unansweredPromise.getKey());
 						}
 					}
 				} finally {
@@ -197,7 +200,7 @@ public class AsyncButtplugIoClient {
 	 * non null and with the same size of the provided list.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Message> List<SimplePromise<T>> sendSimpleMessages(@NonNull List<Message> messages) {
+	public <T extends Message> List<SimplePromise<T>> sendMessages(@NonNull List<Message> messages) {
 		if ( messages.size() <= 0 )
 			return new ArrayList<>();
 		List<SimplePromise<T>> promises = new ArrayList<>();
@@ -206,9 +209,9 @@ public class AsyncButtplugIoClient {
 		try {
 			for ( Message message : messages ) {
 				System.out.println("Sent " + message);
-				TimedSimplePormise<T> promise = new TimedSimplePormise<T>(bornAt);
+				TimedSimplePromise<T> promise = new TimedSimplePromise<T>(bornAt);
 				promises.add(promise);
-				unansweredPromises.put(message, (TimedSimplePormise<Message>) promise);
+				unansweredSimplePromises.put(message, (TimedSimplePromise<Message>) promise);
 			}
 		} finally {
 			unansweredPromisesLock.unlock();
@@ -218,11 +221,11 @@ public class AsyncButtplugIoClient {
 	}
 
 	/**
-	 * Alias of {@link AsyncButtplugIoClient#sendSimpleMessages(List)} with varargs
-	 * @see {@link AsyncButtplugIoClient#sendSimpleMessages(List)}
+	 * Alias of {@link AsyncButtplugIoClient#sendMessages(List)} with varargs
+	 * @see {@link AsyncButtplugIoClient#sendMessages(List)}
 	 */
-	public <T extends Message> List<SimplePromise<T>> sendSimpleMessages(@NonNull Message... messages) {
-		return sendSimpleMessages(Arrays.asList(messages));
+	public <T extends Message> List<SimplePromise<T>> sendMessages(@NonNull Message... messages) {
+		return sendMessages(Arrays.asList(messages));
 	}
 
 	/**
@@ -235,8 +238,8 @@ public class AsyncButtplugIoClient {
 	 * {@link Message} response from the server
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Message> SimplePromise<T> sendSimpleMessage(@NonNull Message message) {
-		return (SimplePromise<T>) sendSimpleMessages(message).get(0);
+	public <T extends Message> SimplePromise<T> sendMessage(@NonNull Message message) {
+		return (SimplePromise<T>) sendMessages(message).get(0);
 	}
 
 	/**
@@ -256,10 +259,10 @@ public class AsyncButtplugIoClient {
 		// return the promise. For more details see
 		// AsyncButtplugIoClientListener.onServerOpen()
 		client.connect();
-		TimedSimplePormise<?> promise = new TimedSimplePormise<ServerInfo>(System.currentTimeMillis());
+		TimedSimplePromise<?> promise = new TimedSimplePromise<ServerInfo>(System.currentTimeMillis());
 		lockUnansweredPromises();
 		try {
-			unansweredPromises.put(message, (TimedSimplePormise<Message>) promise);
+			unansweredSimplePromises.put(message, (TimedSimplePromise<Message>) promise);
 		} finally {
 			unansweredPromisesLock.unlock();
 		}

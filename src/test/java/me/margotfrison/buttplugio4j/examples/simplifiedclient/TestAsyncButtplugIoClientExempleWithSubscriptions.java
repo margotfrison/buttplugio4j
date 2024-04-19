@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled
-public class TestAsyncButtplugIoClientExempleWithPromises {
+public class TestAsyncButtplugIoClientExempleWithSubscriptions {
 	@Test
 	public void launchTest() {
-		new AsyncButtplugIoClientExempleWithPromises().doExample();
-		try { Thread.sleep(2000); }
+		new AsyncButtplugIoClientExempleWithSubscriptions().doExample();
+		try { Thread.sleep(15000); }
 		catch (InterruptedException e) { }
 	}
 }
