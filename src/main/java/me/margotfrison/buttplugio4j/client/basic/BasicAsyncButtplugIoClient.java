@@ -30,7 +30,7 @@ import me.margotfrison.buttplugio4j.protocol.MessageJsonParser;
  * <b>Furthermore</b> it's up to you to implement a way to keep track of the message
  * ids sent and received.
  * @see AsyncButtplugIoClient
- * TODO see SimpleAsyncButtplugIoClient
+ * @see SyncButtplugIoClient
  */
 public class BasicAsyncButtplugIoClient {
 	private final WebSocketClient wsClient;

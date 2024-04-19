@@ -27,7 +27,6 @@ public abstract class Message {
 	 */
 	public static final int LAST_SUPPORTED_VERSION = 3;
 
-	// TODO non message types should be Value instead of Data
 	private static int idCount = 1;
 	private int Id = idCount++;
 

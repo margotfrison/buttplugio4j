@@ -27,7 +27,6 @@ import me.margotfrison.buttplugio4j.protocol.handshake.ServerInfo;
  * <ul>Requests with {@link Promise}s callbacks. Failing if the timeout
  * is exceeded (as the buttplug.io server sometimes fail to send back
  * error messages)</ul>
- * TODO redo javadoc
  */
 public class SyncButtplugIoClient {
 	private final BasicAsyncButtplugIoClient client;

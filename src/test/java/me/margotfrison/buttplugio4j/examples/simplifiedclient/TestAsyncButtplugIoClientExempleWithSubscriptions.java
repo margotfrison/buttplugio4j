@@ -3,7 +3,7 @@ package me.margotfrison.buttplugio4j.examples.simplifiedclient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
+@Disabled("Manual test launching example")
 public class TestAsyncButtplugIoClientExempleWithSubscriptions {
 	@Test
 	public void launchTest() {
