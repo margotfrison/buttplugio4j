@@ -25,10 +25,10 @@ Use this library by referencing this maven project into yours.
 
 This library contains different clients to suit as much users as possible :
 
-* [BasicButtplugIoClient](src/main/java/me/margotfrison/buttplugio4j/client/basic/BasicButtplugIoClientExemple.java)
+* [BasicButtplugIoClient](src/main/java/me/margotfrison/buttplugio4j/client/basic/BasicButtplugIoClient.java)
 the most basic client you could think of for the buttplug.io protocol. Not recommended for any use, but it is
 here just in case you would want to be more technical or optimized.
-* [ButtplugIoClient](src/main/java/me/margotfrison/buttplugio4j/client/basic/ButtplugIoClient.java)
+* [ButtplugIoClient](src/main/java/me/margotfrison/buttplugio4j/client/simplified/ButtplugIoClient.java)
 a client with both asynchronous and synchronous capabilities. It also handle the handshake has one method.
 **It is recommended for most users**
 
