@@ -37,6 +37,6 @@ class SyncButtplugIoClientExemple {
 		ExempleUtils.waitFor(1000);
 		client.sendMessageSync(new StopAllDevices());
 		// Then disconnect
-		client.disconnect();
+		client.disconnectSync();
 	}
 }

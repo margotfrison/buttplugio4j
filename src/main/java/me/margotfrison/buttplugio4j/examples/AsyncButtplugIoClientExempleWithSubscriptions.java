@@ -37,18 +37,18 @@ class AsyncButtplugIoClientExempleWithSubscriptions implements ButtplugIoListene
 					// Log all device scanned
 					log.info("List of devices (names) found during the scan : " + devicesAdded.toString());
 					log.info("List of devices (ids) disconnected during the scan : " + devicesRemoved.toString());
-					client.disconnect();
+					client.disconnectAsync();
 				}).ifError((e) -> {
 					e.printStackTrace();
-					client.disconnect();
+					client.disconnectAsync();
 				});
 			}).ifError((e) -> {
 				e.printStackTrace();
-				client.disconnect();
+				client.disconnectAsync();
 			});
 		}).ifError((e) -> {
 			e.printStackTrace();
-			client.disconnect();
+			client.disconnectAsync();
 		});
 	}
 	

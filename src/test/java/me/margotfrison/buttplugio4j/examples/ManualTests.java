@@ -16,7 +16,7 @@ import lombok.SneakyThrows;
  * behavior for each.<br>
  * This unsure the examples are working at all times.
  */
-@Disabled("Manual test launching example")
+//@Disabled("Manual test launching example")
 public class ManualTests {
 	@BeforeEach
 	@SneakyThrows
@@ -31,21 +31,21 @@ public class ManualTests {
 		catch (InterruptedException e) { }
 	}
 	
-	//@Test
+	@Test
 	public void testAsyncButtplugIoClientExempleWithPromises() {
 		new AsyncButtplugIoClientExempleWithPromises().doExample();
 		try { Thread.sleep(2000); }
 		catch (InterruptedException e) { }
 	}
 
-	//@Test
+	@Test
 	public void testAsyncButtplugIoClientExempleWithSubscriptions() {
 		new AsyncButtplugIoClientExempleWithSubscriptions().doExample();
 		try { Thread.sleep(6000); }
 		catch (InterruptedException e) { }
 	}
 
-	//@Test
+	@Test
 	public void testSyncButtplugIoClientExemple() {
 		new SyncButtplugIoClientExemple().doExample();
 		try { Thread.sleep(2000); }

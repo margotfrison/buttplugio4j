@@ -53,6 +53,7 @@ public class ButtplugIoClient {
 	private boolean timedPromiseFailerStoped = false;
 	private final Map<Message, TimedSimplePromise<Message>> unansweredSimplePromises = new HashMap<>();
 	private final Lock unansweredPromisesLock = new ReentrantLock();
+	private SimplePromise<Void> disconnectPromise;
 	@Getter
 	private final List<ButtplugIoListener> listeners = new ArrayList<>();
 	@Getter @Setter
@@ -152,6 +153,7 @@ public class ButtplugIoClient {
 				timedPromiseFailer.interrupt();
 				unansweredSimplePromises.forEach((k, v) -> v.error(new ButtplugIoClientPromiseException("Server stopped before message with id %d recieved a response".formatted(k.getId()), reason)));
 				listeners.forEach(l -> l.onServerClose(reason));
+				disconnectPromise.resolve(null);
 			} finally {
 				unansweredPromisesLock.unlock();
 			}
@@ -338,15 +340,26 @@ public class ButtplugIoClient {
 	}
 
 	/**
-	 * Disconnect to buttplug.io web socket server. The listener
-	 * {@link ButtplugIoListener} will be noticed when
+	 * Disconnect to buttplug.io web socket server asynchronously.
+	 * The listener {@link ButtplugIoListener} will be noticed when
 	 * the connection is successfully closed.
 	 * @see ButtplugIoListener#onServerClose()
 	 */
-	public void disconnect() {
+	public void disconnectAsync() {
 		timedPromiseFailerStoped = true;
 		timedPromiseFailer.interrupt();
 		client.disconnect();
+	}
+
+	/**
+	 * Disconnect to buttplug.io web socket server synchronously.
+	 */
+	public void disconnectSync() {
+		timedPromiseFailerStoped = true;
+		timedPromiseFailer.interrupt();
+		disconnectPromise = new SimplePromise<Void>();
+		client.disconnect();
+		getPromise(disconnectPromise);
 	}
 
 	public boolean isStoped() {

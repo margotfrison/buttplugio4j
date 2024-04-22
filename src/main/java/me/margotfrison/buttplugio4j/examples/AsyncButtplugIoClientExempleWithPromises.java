@@ -40,18 +40,18 @@ class AsyncButtplugIoClientExempleWithPromises {
 				ExempleUtils.waitFor(1000);
 				client.sendMessageAsync(new StopAllDevices()).then((ignored2) -> {
 					// Then disconnect
-					client.disconnect();
+					client.disconnectAsync();
 				}).ifError((e) -> {
 					e.printStackTrace();
-					client.disconnect();
+					client.disconnectAsync();
 				});
 			}).ifError((e) -> {
 				e.printStackTrace();
-				client.disconnect();
+				client.disconnectAsync();
 			});
 		}).ifError((e) -> {
 			e.printStackTrace();
-			client.disconnect();
+			client.disconnectAsync();
 		});
 	}
 }
