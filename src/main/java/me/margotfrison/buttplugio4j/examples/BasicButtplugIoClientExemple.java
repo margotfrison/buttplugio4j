@@ -1,9 +1,9 @@
-package me.margotfrison.buttplugio4j.examples.simplifiedclient;
+package me.margotfrison.buttplugio4j.examples;
 
 import java.util.Collection;
 import java.util.List;
 
-import me.margotfrison.buttplugio4j.client.basic.BasicAsyncButtplugIoClient;
+import me.margotfrison.buttplugio4j.client.basic.BasicButtplugIoClient;
 import me.margotfrison.buttplugio4j.client.basic.BasicButtplugIoListener;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientException;
 import me.margotfrison.buttplugio4j.protocol.Message;
@@ -18,18 +18,18 @@ import me.margotfrison.buttplugio4j.protocol.handshake.RequestServerInfo;
 import me.margotfrison.buttplugio4j.protocol.handshake.ServerInfo;
 
 /**
- * This example shows how to use the {@link BasicAsyncButtplugIoClient} class
+ * This example shows how to use the {@link BasicButtplugIoClient} class
  * to send and receive messages asynchronously with listeners.
  */
 class BasicButtplugIoClientExemple implements BasicButtplugIoListener {
 	private static final String BUTTPLUG_IO_URL = "ws://localhost:12345";
 	private static final String CLIENT_NAME = "buttplugio4j";
 	
-	private BasicAsyncButtplugIoClient client;
+	private BasicButtplugIoClient client;
 
 	void doExample() {
 		// Init client and do handshake
-		client = new BasicAsyncButtplugIoClient(BUTTPLUG_IO_URL);
+		client = new BasicButtplugIoClient(BUTTPLUG_IO_URL);
 		client.addListener(this);
 		client.connect();
 	}

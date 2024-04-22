@@ -23,7 +23,7 @@ import me.margotfrison.buttplugio4j.protocol.MessageJsonParser;
  * The most basic buttplog.io client I could think of. It is totally loyal to the
  * buttplug.io protocol.<br>
  * <b>Be aware !</b> In this client, you have to manually handshake and open
- * the web socket connection with {@link BasicAsyncButtplugIoClient#connect()}.<br>
+ * the web socket connection with {@link BasicButtplugIoClient#connect()}.<br>
  * <b>Also</b>, only the <a href="https://buttplug-spec.docs.buttplug.io/docs/spec">
  * protocol version 3</a> is currently supported.<br>
  * <b>Furthermore</b> it's up to you to implement a way to keep track of the message
@@ -31,7 +31,7 @@ import me.margotfrison.buttplugio4j.protocol.MessageJsonParser;
  * @see ButtplugIoClient ButtplugIoClient, a smarter client with both synchronous
  * and asynchronous capabilities that keep track of response messages
  */
-public class BasicAsyncButtplugIoClient {
+public class BasicButtplugIoClient {
 	private final WebSocketClient wsClient;
 	@Getter
 	private boolean stoped = true;
@@ -39,12 +39,12 @@ public class BasicAsyncButtplugIoClient {
 	private final List<BasicButtplugIoListener> listeners = new ArrayList<>();
 
 	/**
-	 * Construct a {@link BasicAsyncButtplugIoClient}.
+	 * Construct a {@link BasicButtplugIoClient}.
 	 * @param uri the URI of the buttplug.io server
 	 */
-	public BasicAsyncButtplugIoClient(String uri) {
+	public BasicButtplugIoClient(String uri) {
 		try {
-			this.wsClient = new WebSocketClientWrapper(new URI(uri), new BasicAsyncButtplugIoClientListener());
+			this.wsClient = new WebSocketClientWrapper(new URI(uri), new BasicButtplugIoClientListener());
 		} catch (URISyntaxException e) {
 			throw new ButtplugIoClientInitException("Cannot parse URI : %s".formatted(uri), e);
 		}
@@ -69,7 +69,7 @@ public class BasicAsyncButtplugIoClient {
 	/**
 	 * Listen the websocket server for responses.
 	 */
-	private class BasicAsyncButtplugIoClientListener implements WebSocketClientListener {
+	private class BasicButtplugIoClientListener implements WebSocketClientListener {
 		@Override
 		public void onOpen(ServerHandshake handshakedata) {
 			stoped = false;
@@ -109,8 +109,8 @@ public class BasicAsyncButtplugIoClient {
 	}
 
 	/**
-	 * Alias of {@link BasicAsyncButtplugIoClient#sendMessages(List)} with varargs
-	 * @see {@link BasicAsyncButtplugIoClient#sendMessages(List)}
+	 * Alias of {@link BasicButtplugIoClient#sendMessages(List)} with varargs
+	 * @see {@link BasicButtplugIoClient#sendMessages(List)}
 	 */
 	public void sendMessages(@NonNull Message... messages) {
 		sendMessages(Arrays.asList(messages));

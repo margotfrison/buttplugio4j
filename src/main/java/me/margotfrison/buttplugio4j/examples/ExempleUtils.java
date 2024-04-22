@@ -1,4 +1,4 @@
-package me.margotfrison.buttplugio4j.examples.simplifiedclient;
+package me.margotfrison.buttplugio4j.examples;
 
 import lombok.SneakyThrows;
 

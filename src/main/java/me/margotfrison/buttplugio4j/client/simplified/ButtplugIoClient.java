@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import me.margotfrison.buttplugio4j.client.basic.BasicAsyncButtplugIoClient;
+import me.margotfrison.buttplugio4j.client.basic.BasicButtplugIoClient;
 import me.margotfrison.buttplugio4j.client.basic.BasicButtplugIoListener;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientException;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientPromiseException;
@@ -48,7 +48,7 @@ public class ButtplugIoClient {
 	 */
 	public static final long DEFAULT_PROMISE_TIMEOUT_MS = 5000;
 
-	private final BasicAsyncButtplugIoClient client;
+	private final BasicButtplugIoClient client;
 	private final Thread timedPromiseFailer = new Thread(new TimedPromiseFailer());
 	private boolean timedPromiseFailerStoped = false;
 	private final Map<Message, TimedSimplePromise<Message>> unansweredSimplePromises = new HashMap<>();
@@ -67,7 +67,7 @@ public class ButtplugIoClient {
 	 * @see ButtplugIoClient#ButtplugIoClient(String)
 	 */
 	public ButtplugIoClient(String uri, long timeoutMs) {
-		this.client = new BasicAsyncButtplugIoClient(uri);
+		this.client = new BasicButtplugIoClient(uri);
 		this.client.addListener(new AsyncButtplugIoClientListener());
 		this.promisesTimeoutMs = timeoutMs;
 		this.timedPromiseFailer.start();
