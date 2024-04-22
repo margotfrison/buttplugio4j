@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.pfrison</groupId>
 	<artifactId>buttplugio4j</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>ButtplugIO4J</name>
 	<description>A buttplug.io client library for Java</description>
 	<packaging>jar</packaging>
