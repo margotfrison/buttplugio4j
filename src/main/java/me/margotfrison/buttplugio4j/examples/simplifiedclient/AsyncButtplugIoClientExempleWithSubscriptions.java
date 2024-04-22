@@ -29,7 +29,7 @@ class AsyncButtplugIoClientExempleWithSubscriptions implements ButtplugIoListene
 		// Init client and do handshake
 		ButtplugIoClient client = new ButtplugIoClient(BUTTPLUG_IO_URL);
 		client.addListener(this);
-		client.sendHandshakeAsync(new RequestServerInfo(CLIENT_NAME, Message.LAST_SUPPORTED_VERSION)).then((ignored) -> {
+		client.sendHandshakeAsync(new RequestServerInfo(CLIENT_NAME)).then((ignored) -> {
 			// Send StartScanning
 			client.sendMessageAsync(new StartScanning()).then((ignored2) -> {
 				// Wait for 10 seconds

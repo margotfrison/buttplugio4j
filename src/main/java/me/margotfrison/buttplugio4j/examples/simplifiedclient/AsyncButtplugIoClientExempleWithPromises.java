@@ -4,7 +4,6 @@ import java.util.List;
 
 import me.margotfrison.buttplugio4j.client.simplified.ButtplugIoClient;
 import me.margotfrison.buttplugio4j.client.simplified.Promise;
-import me.margotfrison.buttplugio4j.protocol.Message;
 import me.margotfrison.buttplugio4j.protocol.enumeration.Device;
 import me.margotfrison.buttplugio4j.protocol.enumeration.DeviceList;
 import me.margotfrison.buttplugio4j.protocol.enumeration.RequestDeviceList;
@@ -25,7 +24,7 @@ class AsyncButtplugIoClientExempleWithPromises {
 	void doExample() {
 		// Init client and do handshake
 		ButtplugIoClient client = new ButtplugIoClient(BUTTPLUG_IO_URL);
-		client.sendHandshakeAsync(new RequestServerInfo(CLIENT_NAME, Message.LAST_SUPPORTED_VERSION)).then((ignored) -> {
+		client.sendHandshakeAsync(new RequestServerInfo(CLIENT_NAME)).then((ignored) -> {
 			// Send RequestDeviceList
 			client.sendMessageAsync(new RequestDeviceList()).then((message) -> {
 				// Send a ScalarCommandRequest to every devices connected

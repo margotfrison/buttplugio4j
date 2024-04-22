@@ -144,6 +144,7 @@ public class BasicAsyncButtplugIoClient {
 	 * @see BasicButtplugIoListener#onServerOpen()
 	 */
 	public void connect() {
+		stoped = false;
 		wsClient.connect();
 	}
 

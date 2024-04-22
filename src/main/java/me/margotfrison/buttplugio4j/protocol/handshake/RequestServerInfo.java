@@ -16,6 +16,11 @@ import lombok.Data;
 public class RequestServerInfo extends Message {
 	String ClientName;
 	int MessageVersion;
+	
+	public RequestServerInfo(String clientName) {
+		this.ClientName = clientName;
+		this.MessageVersion = Message.LAST_SUPPORTED_VERSION;
+	}
 
 	@Override
 	public String getType() {

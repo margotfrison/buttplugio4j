@@ -3,7 +3,6 @@ package me.margotfrison.buttplugio4j.examples.simplifiedclient;
 import java.util.List;
 
 import me.margotfrison.buttplugio4j.client.simplified.ButtplugIoClient;
-import me.margotfrison.buttplugio4j.protocol.Message;
 import me.margotfrison.buttplugio4j.protocol.enumeration.Device;
 import me.margotfrison.buttplugio4j.protocol.enumeration.DeviceList;
 import me.margotfrison.buttplugio4j.protocol.enumeration.RequestDeviceList;
@@ -24,7 +23,7 @@ class SyncButtplugIoClientExemple {
 	void doExample() {
 		// Init client and do handshake
 		ButtplugIoClient client = new ButtplugIoClient(BUTTPLUG_IO_URL);
-		client.sendHandshakeSync(new RequestServerInfo(CLIENT_NAME, Message.LAST_SUPPORTED_VERSION));
+		client.sendHandshakeSync(new RequestServerInfo(CLIENT_NAME));
 		// Send RequestDeviceList
 		DeviceList deviceList = client.sendMessageSync(new RequestDeviceList());
 		for (int i = 0; i < deviceList.getDevices().size(); i++) {
