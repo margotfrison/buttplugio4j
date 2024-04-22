@@ -19,7 +19,7 @@ import me.margotfrison.buttplugio4j.protocol.handshake.ServerInfo;
 
 /**
  * This example shows how to use the {@link BasicAsyncButtplugIoClient} class
- * to send and receive messages asynchronously with listeners
+ * to send and receive messages asynchronously with listeners.
  */
 class BasicButtplugIoClientExemple implements BasicButtplugIoListener {
 	private static final String BUTTPLUG_IO_URL = "ws://localhost:12345";

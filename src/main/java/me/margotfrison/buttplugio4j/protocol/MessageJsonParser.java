@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class MessageJsonParser {
 	private static final JsonParser jsonParser = new JsonParser();
 	// Find all Message classes and their type
 	private static final Map<String, Class<? extends Message>> MESSAGE_TYPE_TO_CLASS =
-			findAllClassesInPackage(Message.class.getPackageName()).stream()
+			new Reflections(Message.class.getPackageName()).getSubTypesOf(Message.class).stream()
 				.filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
 				.collect(Collectors.toMap(
 						(clazz) -> {
@@ -48,7 +47,7 @@ public class MessageJsonParser {
 						}, Function.identity()));
 
 	/**
-	 * Parse this JSON format :
+	 * Parse a {@link Message} into this JSON format :
 	 * {
 	 *   "MessageType" :
 	 *   {
@@ -56,10 +55,9 @@ public class MessageJsonParser {
 	 *     "MessageField2": "MessageData2"
 	 *   }
 	 * }
-	 * into a {@link Message} with the corresponding class.
-	 * @param element
-	 * @return
-	 * @throws Exception
+	 * with "MessageType" corresponding to the class name of the {@link Message}.
+	 * @param message the {@link Message} to parse into JSON
+	 * @return a string representation of the {@link Message} in JSON
 	 */
 	private static JsonElement toJson(Message message) {
 		JsonObject element = new JsonObject();
@@ -70,8 +68,8 @@ public class MessageJsonParser {
 	/**
 	 * Transform a list of {@link Message}s into JSON format readable by
 	 * the buttplug.io server.
-	 * @param messages
-	 * @return
+	 * @param messages the list of {@link Message}s to parse into JSON
+	 * @return a string representation of the list of {@link Message}s in JSON
 	 */
 	public static String toJson(Collection<Message> messages) {
 		JsonArray jsonArray = new JsonArray();
@@ -81,7 +79,7 @@ public class MessageJsonParser {
 	}
 
 	/**
-	 * Parse a {@link Message} into this JSON format :
+	 * Parse this JSON format :
 	 * {
 	 *   "MessageType" :
 	 *   {
@@ -89,12 +87,11 @@ public class MessageJsonParser {
 	 *     "MessageField2": "MessageData2"
 	 *   }
 	 * }
-	 * with "MessageType" corresponding to the class name of the {@link Message}.
-	 * @param element
-	 * @return
-	 * @throws Exception
+	 * into a {@link Message} with the corresponding class.
+	 * @param element the JSON element to parse into {@link Message}
+	 * @return a {@link Message} object parsed from the JSON
 	 */
-	private static Message fromJson(JsonElement element) throws Exception {
+	private static Message fromJson(JsonElement element) {
 		JsonObject jsonObject = element.getAsJsonObject();
 		Entry<String, JsonElement> entry = jsonObject.entrySet().iterator().next();
 		Class<? extends Message> clazz = MESSAGE_TYPE_TO_CLASS.get(entry.getKey());
@@ -103,8 +100,8 @@ public class MessageJsonParser {
 
 	/**
 	 * Transform a JSON sent by the server into a list of {@link Message}s.
-	 * @param messages
-	 * @return
+	 * @param json the JSON {@link String} representation to parse into {@link Message}
+	 * @return a list of {@link Message}s parsed from JSON
 	 */
 	public static Collection<Message> fromJson(String json) throws Exception {
 		JsonArray jsonArray = jsonParser.parse(json).getAsJsonArray();
@@ -112,10 +109,5 @@ public class MessageJsonParser {
 		for (int i = 0; i < jsonArray.size(); i++)
 			messages.add(fromJson(jsonArray.get(i)));
 		return messages;
-	}
-
-	private static Set<Class<? extends Message>> findAllClassesInPackage(String packageName) {
-		Reflections reflections = new Reflections(Message.class.getPackageName());    
-		return reflections.getSubTypesOf(Message.class);
 	}
 }

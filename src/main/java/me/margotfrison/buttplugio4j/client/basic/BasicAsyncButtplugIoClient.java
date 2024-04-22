@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -29,8 +28,8 @@ import me.margotfrison.buttplugio4j.protocol.MessageJsonParser;
  * protocol version 3</a> is currently supported.<br>
  * <b>Furthermore</b> it's up to you to implement a way to keep track of the message
  * ids sent and received.
- * @see ButtplugIoClient
- * @see SyncButtplugIoClient
+ * @see ButtplugIoClient ButtplugIoClient, a smarter client with both synchronous
+ * and asynchronous capabilities that keep track of response messages
  */
 public class BasicAsyncButtplugIoClient {
 	private final WebSocketClient wsClient;
@@ -79,7 +78,7 @@ public class BasicAsyncButtplugIoClient {
 
 		@Override
 		public void onMessage(String json) {
-			// When a JSON is received : parse, and for every messages : complete future
+			// When a JSON is received parse it into Messages and notify listeners
 			try {
 				Collection<Message> messages = MessageJsonParser.fromJson(json);
 				listeners.forEach(l -> l.onMessages(messages));
@@ -102,15 +101,8 @@ public class BasicAsyncButtplugIoClient {
 
 	/**
 	 * Send one or more {@link Message}s to the buttplug.io server.
-	 * @param <T> the assumed class of message received
-	 * (not guaranteed).
 	 * @param messages a list of {@link Message}s to send.
-	 * Should not be null
-	 * @return a list of {@link Future} that will be resolved as a
-	 * {@link Message} server response, in the same order as the
-	 * {@link Message} list given in argument.<br>
-	 * It is guaranteed that the returned list will be
-	 * non null and with the same size of the provided list.
+	 * Should not be null.
 	 */
 	public void sendMessages(@NonNull List<Message> messages) {
 		wsClient.send(MessageJsonParser.toJson(messages));
@@ -126,12 +118,8 @@ public class BasicAsyncButtplugIoClient {
 
 	/**
 	 * Send a single {@link Message} to the buttplug.io server.
-	 * @param <T> the assumed class of message received
-	 * (not guaranteed).
 	 * @param message the {@link Message} to send.
 	 * Should not be null
-	 * @return a {@link Future} that will be resolved as the
-	 * {@link Message} response from the server
 	 */
 	public void sendMessage(@NonNull Message message) {
 		sendMessages(message);

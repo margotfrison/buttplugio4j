@@ -1,7 +1,12 @@
 package me.margotfrison.buttplugio4j.client.simplified;
 
 import me.margotfrison.buttplugio4j.protocol.Message;
+import me.margotfrison.buttplugio4j.protocol.enumeration.StartScanning;
 
+/**
+ * A listener for the client {@link ButtplugIoClient}.
+ * It includes subscription messages (ex {@link StartScanning})
+ */
 public interface ButtplugIoListener {
 	/**
 	 * Called when the server close the connection whether

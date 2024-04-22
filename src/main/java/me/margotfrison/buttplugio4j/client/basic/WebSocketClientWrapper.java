@@ -9,7 +9,8 @@ import org.java_websocket.handshake.ServerHandshake;
  * Transform the {@link WebSocketClient} abstract class into this wrapper
  * and a listener setted by the constructor.<br>
  * This class is not intended to be used by the final user of this library. Use
- * the much simpler {@link SimpleAsyncButtplugIoClient} instead.
+ * the much simpler {@link BasicAsyncButtplugIoClient} or any simpler provided client
+ * instead.
  */
 class WebSocketClientWrapper extends WebSocketClient {
 	private final WebSocketClientListener listener;

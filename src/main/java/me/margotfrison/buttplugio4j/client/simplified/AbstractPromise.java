@@ -9,6 +9,10 @@ import java.util.function.Consumer;
 
 import lombok.NonNull;
 
+/**
+ * A {@link Promise} implementation used by {@link SimplePromise}
+ * @param <T> the handled value
+ */
 public abstract class AbstractPromise<T> implements Promise<T> {
 	private static final long FUTURE_CHECK_DELAY = 10;
 

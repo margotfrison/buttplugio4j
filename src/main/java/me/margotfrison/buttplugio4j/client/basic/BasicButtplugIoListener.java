@@ -6,6 +6,9 @@ import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientException;
 import me.margotfrison.buttplugio4j.protocol.Message;
 import me.margotfrison.buttplugio4j.protocol.handshake.RequestServerInfo;
 
+/**
+ * A listener to use with {@link BasicButtplugIoListener}
+ */
 public interface BasicButtplugIoListener {
 	/**
 	 * Called when the web socket client is connected to the
@@ -18,24 +21,24 @@ public interface BasicButtplugIoListener {
 	/**
 	 * Called when the server close the connection whether
 	 * the server abruptly closed the connection or the
-	 * client requested it
-	 * 
+	 * client requested it.
 	 */
 	default void onServerClose(Exception reason) { }
 
 	/**
-	 * Called when the web socket client encounter an error
+	 * Called when the web socket client encounter an error.
 	 */
 	default void onWebSocketError() { }
 
 	/**
-	 * Called when the buttplug.io client encounter an error when receiving a message
+	 * Called when the buttplug.io client encounter an error
+	 * when receiving a message.
 	 */
 	default void onButtplugClientError(ButtplugIoClientException e) { }
 
 	/**
 	 * Called when the server sent back a list of {@link Message}s
-	 * @param messages
+	 * @param messages a list of {@link Message}s to send
 	 */
 	default void onMessages(Collection<Message> messages) { }
 }

@@ -13,7 +13,7 @@ import me.margotfrison.buttplugio4j.protocol.genericdevice.StopAllDevices;
 import me.margotfrison.buttplugio4j.protocol.handshake.RequestServerInfo;
 
 /**
- * This example shows how to use the {@link SyncButtplugIoClient} class
+ * This example shows how to use the {@link ButtplugIoClient} class
  * to send and receive messages synchronously.
  */
 class SyncButtplugIoClientExemple {

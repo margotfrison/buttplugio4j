@@ -6,6 +6,16 @@ import org.junit.jupiter.api.Test;
 
 import lombok.SneakyThrows;
 
+/**
+ * Theses manual tests are not to be included in
+ * automatic tests.<br>
+ * When performing theses tests, developers should
+ * have a working buttplig.io environment setup,
+ * launch the tests by commenting the {@link Disabled}
+ * annotation and manually confirm the correct
+ * behavior for each.<br>
+ * This unsure the examples are working at all times.
+ */
 @Disabled("Manual test launching example")
 public class ManualTests {
 	@BeforeEach

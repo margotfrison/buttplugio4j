@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.extern.java.Log;
 import me.margotfrison.buttplugio4j.client.simplified.ButtplugIoClient;
 import me.margotfrison.buttplugio4j.client.simplified.ButtplugIoListener;
-import me.margotfrison.buttplugio4j.client.simplified.Promise;
 import me.margotfrison.buttplugio4j.protocol.Message;
 import me.margotfrison.buttplugio4j.protocol.enumeration.DeviceAdded;
 import me.margotfrison.buttplugio4j.protocol.enumeration.DeviceRemoved;
@@ -16,7 +15,7 @@ import me.margotfrison.buttplugio4j.protocol.handshake.RequestServerInfo;
 
 /**
  * This example shows how to use the {@link ButtplugIoClient} class
- * to send and receive messages asynchronously using {@link Promise}s.
+ * to send and receive subscription messages (ex scanning command).
  */
 @Log
 class AsyncButtplugIoClientExempleWithSubscriptions implements ButtplugIoListener {
