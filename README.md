@@ -3,6 +3,12 @@
 ButtplugIO4J is a java client library for buttplug.io. See [buttplug.io main page](https://buttplug.io/)
 for more information.
 
+## Table of Contents
+1. [Use](#Use)
+2. [Overview](#Overview)
+3. [Examples](#Examples)
+4. [Build](#Build)
+
 ## Use
 
 Use this library by referencing this maven project into yours.
@@ -14,17 +20,6 @@ Use this library by referencing this maven project into yours.
 	<version>1.0.0</version>
 </dependency>
 ```
-
-To help you, we've created various examples classes :
-
-* [BasicButtplugIoClientExemple](src/main/java/me/margotfrison/buttplugio4j/examples/BasicButtplugIoClientExemple.java)
-the most basic client (BasicButtplugIoClient) for this library. Not recommended for any use.
-* [AsyncButtplugIoClientExempleWithPromises](src/main/java/me/margotfrison/buttplugio4j/examples/AsyncButtplugIoClientExempleWithPromises.java)
-the ButtplugIoClient client used asynchronously that show how to use promises as callbacks.
-* [AsyncButtplugIoClientExempleWithSubscriptions](src/main/java/me/margotfrison/buttplugio4j/examples/AsyncButtplugIoClientExempleWithSubscriptions.java)
-the ButtplugIoClient client used asynchronously that show how to handle subscription messages such as StartScan.
-* [SyncButtplugIoClientExemple](src/main/java/me/margotfrison/buttplugio4j/examples/SyncButtplugIoClientExemple.java)
-the ButtplugIoClient client used synchronously that show how to send simple message synchronously. **(perfect for beginners)**
 
 ## Overview
 
@@ -39,6 +34,19 @@ a client with both asynchronous and synchronous capabilities. It also handle the
 
 We also planned to develop a simpler client that would abstract the protocol and suppress the need of
 *most* knowledge of this protocol. This is scheduled for the version 1.1.0.
+
+## Examples
+
+To help you, we've created various examples classes :
+
+* [BasicButtplugIoClientExemple](src/main/java/me/margotfrison/buttplugio4j/examples/BasicButtplugIoClientExemple.java)
+the most basic client (BasicButtplugIoClient) for this library. Not recommended for any use.
+* [AsyncButtplugIoClientExempleWithPromises](src/main/java/me/margotfrison/buttplugio4j/examples/AsyncButtplugIoClientExempleWithPromises.java)
+the ButtplugIoClient client used asynchronously that show how to use promises as callbacks.
+* [AsyncButtplugIoClientExempleWithSubscriptions](src/main/java/me/margotfrison/buttplugio4j/examples/AsyncButtplugIoClientExempleWithSubscriptions.java)
+the ButtplugIoClient client used asynchronously that show how to handle subscription messages such as StartScan.
+* [SyncButtplugIoClientExemple](src/main/java/me/margotfrison/buttplugio4j/examples/SyncButtplugIoClientExemple.java)
+the ButtplugIoClient client used synchronously that show how to send simple message synchronously. **(perfect for beginners)**
 
 ## Build
 
