@@ -12,6 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import me.margotfrison.buttplugio4j.client.basic.BasicAsyncButtplugIoClient;
 import me.margotfrison.buttplugio4j.client.basic.BasicButtplugIoListener;
@@ -29,12 +30,12 @@ import me.margotfrison.buttplugio4j.protocol.handshake.ServerInfo;
  * is exceeded (as the buttplug.io server sometimes fail to send back
  * error messages)</ul>
  */
-public class AsyncButtplugIoClient {
+public class ButtplugIoClient {
 	/**
 	 * This should be plenty enough (5 seconds) for a local server to respond.
-	 * Use {@link AsyncButtplugIoClient#AsyncButtplugIoClient(String, long)} to
+	 * Use {@link ButtplugIoClient#AsyncButtplugIoClient(String, long)} to
 	 * specify the timeout if its not.
-	 * @see AsyncButtplugIoClient#AsyncButtplugIoClient(String, long)
+	 * @see ButtplugIoClient#ButtplugIoClient(String, long)
 	 */
 	public static final long DEFAULT_PROMISE_TIMEOUT_MS = 5000;
 
@@ -47,16 +48,16 @@ public class AsyncButtplugIoClient {
 	private boolean stoped = true;
 	@Getter
 	private final List<ButtplugIoListener> listeners = new ArrayList<>();
-	@Getter
-	private final long promisesTimeoutMs;
+	@Getter @Setter
+	private long promisesTimeoutMs;
 
 	/**
-	 * Construct a {@link AsyncButtplugIoClient}.
+	 * Construct a {@link ButtplugIoClient}.
 	 * @param uri the URI of the buttplug.io server
 	 * @param timeoutMs the timeout in milliseconds for every
 	 * {@link Promise}s sent back after a request
 	 */
-	public AsyncButtplugIoClient(String uri, long timeoutMs) {
+	public ButtplugIoClient(String uri, long timeoutMs) {
 		this.client = new BasicAsyncButtplugIoClient(uri);
 		this.client.addListener(new AsyncButtplugIoClientListener());
 		this.promisesTimeoutMs = timeoutMs;
@@ -64,13 +65,13 @@ public class AsyncButtplugIoClient {
 	}
 
 	/**
-	 * Construct a {@link AsyncButtplugIoClient} with a default
+	 * Construct a {@link ButtplugIoClient} with a default
 	 * timeout for all promises
-	 * {@link AsyncButtplugIoClient#DEFAULT_PROMISE_TIMEOUT_MS}.
+	 * {@link ButtplugIoClient#DEFAULT_PROMISE_TIMEOUT_MS}.
 	 * @param uri the URI of the buttplug.io server
-	 * @see {@link AsyncButtplugIoClient#DEFAULT_PROMISE_TIMEOUT_MS}
+	 * @see {@link ButtplugIoClient#DEFAULT_PROMISE_TIMEOUT_MS}
 	 */
-	public AsyncButtplugIoClient(String uri) {
+	public ButtplugIoClient(String uri) {
 		this(uri, DEFAULT_PROMISE_TIMEOUT_MS);
 	}
 
@@ -123,7 +124,6 @@ public class AsyncButtplugIoClient {
 					// Simple promises
 					for ( Entry<Message, TimedSimplePromise<Message>> promiseEntry : unansweredSimplePromises.entrySet() ) {
 						if ( promiseEntry.getKey().getId() == message.getId() ) {
-							System.out.println("Responded to " + promiseEntry.getKey());
 							promiseEntry.getValue().resolve(message);
 							unansweredSimplePromises.remove(promiseEntry.getKey());
 							break;
@@ -169,7 +169,6 @@ public class AsyncButtplugIoClient {
 					long killDelay = System.currentTimeMillis() - promisesTimeoutMs;
 					for ( Entry<Message, TimedSimplePromise<Message>> unansweredPromise : unansweredSimplePromises.entrySet() ) {
 						if ( unansweredPromise.getValue().getBornAt() > killDelay ) {
-							System.out.println("Failed " + unansweredPromise.getKey());
 							unansweredPromise.getValue().error(new ButtplugIoClientPromiseException("Server failed to send message back to the client in the allowed time for message with id %d".formatted(unansweredPromise.getKey().getId())));
 							unansweredSimplePromises.remove(unansweredPromise.getKey());
 						}
@@ -199,7 +198,7 @@ public class AsyncButtplugIoClient {
 	 * non null and with the same size of the provided list.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Message> List<SimplePromise<T>> sendMessages(@NonNull List<Message> messages) {
+	public <T extends Message> List<SimplePromise<T>> sendMessagesAsync(@NonNull List<Message> messages) {
 		if ( messages.size() <= 0 )
 			return new ArrayList<>();
 		List<SimplePromise<T>> promises = new ArrayList<>();
@@ -207,7 +206,6 @@ public class AsyncButtplugIoClient {
 		lockUnansweredPromises();
 		try {
 			for ( Message message : messages ) {
-				System.out.println("Sent " + message);
 				TimedSimplePromise<T> promise = new TimedSimplePromise<T>(bornAt);
 				promises.add(promise);
 				unansweredSimplePromises.put(message, (TimedSimplePromise<Message>) promise);
@@ -220,11 +218,11 @@ public class AsyncButtplugIoClient {
 	}
 
 	/**
-	 * Alias of {@link AsyncButtplugIoClient#sendMessages(List)} with varargs
-	 * @see {@link AsyncButtplugIoClient#sendMessages(List)}
+	 * Alias of {@link ButtplugIoClient#sendMessagesAsync(List)} with varargs
+	 * @see {@link ButtplugIoClient#sendMessagesAsync(List)}
 	 */
-	public <T extends Message> List<SimplePromise<T>> sendMessages(@NonNull Message... messages) {
-		return sendMessages(Arrays.asList(messages));
+	public <T extends Message> List<SimplePromise<T>> sendMessagesAsync(@NonNull Message... messages) {
+		return sendMessagesAsync(Arrays.asList(messages));
 	}
 
 	/**
@@ -237,8 +235,8 @@ public class AsyncButtplugIoClient {
 	 * {@link Message} response from the server
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Message> SimplePromise<T> sendMessage(@NonNull Message message) {
-		return (SimplePromise<T>) sendMessages(message).get(0);
+	public <T extends Message> SimplePromise<T> sendMessageAsync(@NonNull Message message) {
+		return (SimplePromise<T>) sendMessagesAsync(message).get(0);
 	}
 
 	/**
@@ -252,7 +250,7 @@ public class AsyncButtplugIoClient {
 	 * {@link ServerInfo} response from the server
 	 */
 	@SuppressWarnings("unchecked")
-	public SimplePromise<ServerInfo> sendHandshake(@NonNull RequestServerInfo message) {
+	public SimplePromise<ServerInfo> sendHandshakeAsync(@NonNull RequestServerInfo message) {
 		// We try to connect and save the message to be sent to
 		// the server after the connection while we prepare and
 		// return the promise. For more details see
@@ -266,6 +264,62 @@ public class AsyncButtplugIoClient {
 			unansweredPromisesLock.unlock();
 		}
 		return (SimplePromise<ServerInfo>) promise;
+	}
+
+
+	/**
+	 * Send one or more {@link Message}s to the buttplug.io server.
+	 * @param <T> the assumed class of message received
+	 * (not guaranteed).
+	 * @param messages a list of {@link Message}s to send.
+	 * Should not be null
+	 * @return a list of {@link SimplePromise} that will be resolved as a
+	 * {@link Message} server response, in the same order as the
+	 * {@link Message} list given in argument.<br>
+	 * It is guaranteed that the returned list will be
+	 * non null and with the same size of the provided list.
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Message> List<T> sendMessagesSync(@NonNull List<Message> messages) {
+		return (List<T>) sendMessagesAsync(messages)
+				.stream()
+				.map(p -> getPromise(p))
+				.toList();
+	}
+
+	/**
+	 * Alias of {@link SyncButtplugIoClient#sendMessages(List)} with varargs
+	 * @see {@link SyncButtplugIoClient#sendMessages(List)}
+	 */
+	public <T extends Message> List<T> sendMessagesSync(@NonNull Message... messages) {
+		return sendMessagesSync(Arrays.asList(messages));
+	}
+
+	/**
+	 * Send a single {@link Message} to the buttplug.io server.
+	 * @param <T> the assumed class of message received
+	 * (not guaranteed).
+	 * @param message the {@link Message} to send.
+	 * Should not be null
+	 * @return a {@link SimplePromise} that will be resolved as the
+	 * {@link Message} response from the server
+	 */
+	public <T extends Message> T sendMessageSync(@NonNull Message message) {
+		return getPromise(sendMessageAsync(message));
+	}
+
+	/**
+	 * Perform the handshake automatically with the provided
+	 * {@link Message}. After the response is received through
+	 * the {@link SimplePromise} you should be able to send any kind
+	 * of messages to the server.
+	 * @param message the {@link RequestServerInfo} to send.
+	 * Should not be null
+	 * @return a {@link SimplePromise} that will be resolved as the
+	 * {@link ServerInfo} response from the server
+	 */
+	public ServerInfo sendHandshakeSync(@NonNull RequestServerInfo message) {
+		return getPromise(sendHandshakeAsync(message));
 	}
 
 	/**
@@ -284,5 +338,10 @@ public class AsyncButtplugIoClient {
 	@SneakyThrows
 	private void lockUnansweredPromises() {
 		unansweredPromisesLock.lockInterruptibly();
+	}
+
+	@SneakyThrows
+	private <T extends Object> T getPromise(Promise<T> promise) {
+		return promise.get();
 	}
 }

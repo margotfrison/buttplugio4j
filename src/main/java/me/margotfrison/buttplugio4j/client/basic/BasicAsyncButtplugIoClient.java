@@ -13,7 +13,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import lombok.Getter;
 import lombok.NonNull;
-import me.margotfrison.buttplugio4j.client.simplified.AsyncButtplugIoClient;
+import me.margotfrison.buttplugio4j.client.simplified.ButtplugIoClient;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientException;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientInitException;
 import me.margotfrison.buttplugio4j.exceptions.ButtplugIoClientJsonException;
@@ -29,7 +29,7 @@ import me.margotfrison.buttplugio4j.protocol.MessageJsonParser;
  * protocol version 3</a> is currently supported.<br>
  * <b>Furthermore</b> it's up to you to implement a way to keep track of the message
  * ids sent and received.
- * @see AsyncButtplugIoClient
+ * @see ButtplugIoClient
  * @see SyncButtplugIoClient
  */
 public class BasicAsyncButtplugIoClient {

@@ -2,7 +2,7 @@ package me.margotfrison.buttplugio4j.examples.simplifiedclient;
 
 import java.util.List;
 
-import me.margotfrison.buttplugio4j.client.simplified.SyncButtplugIoClient;
+import me.margotfrison.buttplugio4j.client.simplified.ButtplugIoClient;
 import me.margotfrison.buttplugio4j.protocol.Message;
 import me.margotfrison.buttplugio4j.protocol.enumeration.Device;
 import me.margotfrison.buttplugio4j.protocol.enumeration.DeviceList;
@@ -23,20 +23,20 @@ class SyncButtplugIoClientExemple {
 
 	void doExample() {
 		// Init client and do handshake
-		SyncButtplugIoClient client = new SyncButtplugIoClient(BUTTPLUG_IO_URL);
-		client.sendHandshake(new RequestServerInfo(CLIENT_NAME, Message.LAST_SUPPORTED_VERSION));
+		ButtplugIoClient client = new ButtplugIoClient(BUTTPLUG_IO_URL);
+		client.sendHandshakeSync(new RequestServerInfo(CLIENT_NAME, Message.LAST_SUPPORTED_VERSION));
 		// Send RequestDeviceList
-		DeviceList deviceList = client.sendMessage(new RequestDeviceList());
+		DeviceList deviceList = client.sendMessageSync(new RequestDeviceList());
 		for (int i = 0; i < deviceList.getDevices().size(); i++) {
 			Device device = deviceList.getDevices().get(i);
 			for (int j = 0; j < device.getDeviceMessages().getScalarCmd().size(); j++) {
 				ScalarCommand cmd = device.getDeviceMessages().getScalarCmd().get(j);
-				client.sendMessage(new ScalarCommandRequest(device.getDeviceIndex(), List.of(new Scalar(j, 0.5, cmd.getActuatorType()))));
+				client.sendMessageSync(new ScalarCommandRequest(device.getDeviceIndex(), List.of(new Scalar(j, 0.5, cmd.getActuatorType()))));
 			}
 		}
 		// Wait 1 second and send a StopAllDevices command
 		ExempleUtils.waitFor(1000);
-		client.sendMessage(new StopAllDevices());
+		client.sendMessageSync(new StopAllDevices());
 		// Then disconnect
 		client.disconnect();
 	}
